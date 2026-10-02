@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    
+    # Redirigir silenciosamente todo el tráfico hacia la carpeta public/
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Bloquear acceso a carpetas del núcleo
+    RedirectMatch 404 ^/src/.*$
+    RedirectMatch 404 ^/config/.*$
+    RedirectMatch 404 ^/core/.*$
+    RedirectMatch 404 ^/\.env$
+</IfModule>

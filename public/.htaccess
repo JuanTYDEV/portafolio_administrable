@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Si el archivo o carpeta existe físicamente (ej. assets/css/style.css), que lo cargue normal.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Si no existe, manda todo el tráfico al index.php
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>

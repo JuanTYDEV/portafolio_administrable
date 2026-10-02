@@ -1,0 +1,29 @@
+# Evitamos que se envien los logs
+log_mercadopago.txt
+log_mercadopago.log
+/logs/*
+
+# === COMPOSER ===
+composer.phar
+
+# === IMAGENES DE PERFILES/ COACHES/ DISCIPLINAS ===
+/assets/images/*
+
+/vendor/*
+/vendor/phpmailer/
+
+#Configuracion MAC/WINDOWS
+.DS_Store
+
+# Editores de código
+.vscode/
+.idea/
+
+
+#extras
+AGENTS.md
+PENDIENTES.md
+
+# Configuración de la base de datos
+/config/database.php
+.env

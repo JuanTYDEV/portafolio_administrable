@@ -8,12 +8,12 @@ if (!defined('APP_RUNNING')) {
 
 /** @var \Core\Router $router */
 use App\Controllers\Admin\AuthController;
-use App\Controllers\Admin\DashboardController;
+use App\Controllers\Admin\PanelController;
 use App\Controllers\Admin\FinanzasController;
 
 // Prefijo /panel para todo el sistema de administración
-/* $router->get('/panel/login', [AuthController::class, 'login']);
+$router->get('/panel/login', [AuthController::class, 'login']);
 $router->post('/panel/login', [AuthController::class, 'procesarLogin']);
 
-$router->get('/panel/dashboard', [DashboardController::class, 'index']);
-$router->get('/panel/finanzas', [FinanzasController::class, 'index']); */
+$router->get('/panel/dashboard', [PanelController::class, 'index']);
+// $router->get('/panel/finanzas', [FinanzasController::class, 'index']);

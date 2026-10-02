@@ -1,40 +1,63 @@
 <?php
+
 namespace Core;
 
 if (!defined('APP_RUNNING')) die("Acceso denegado.");
 
-class Router {
+class Router
+{
     protected array $routes = [];
 
     // Registrar rutas GET
-    public function get(string $route, array|callable $callback) {
+    public function get(string $route, array|callable $callback)
+    {
         $this->routes['GET'][$route] = $callback;
     }
 
     // Registrar rutas POST
-    public function post(string $route, array|callable $callback) {
+    public function post(string $route, array|callable $callback)
+    {
         $this->routes['POST'][$route] = $callback;
     }
 
     // El cerebro: lee la URL y busca coincidencias
-    public function resolve() {
+    public function resolve()
+    {
         $method = $_SERVER['REQUEST_METHOD'];
-        
+
         // Obtenemos la URL actual y le quitamos variables (ej. ?page=2)
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        
-        // Si tienes el proyecto en una subcarpeta (ej. localhost/porfolio/public), limpiamos ese prefijo
-        $scriptName = dirname($_SERVER['SCRIPT_NAME']);
-        if ($scriptName !== '/' && strpos($uri, $scriptName) === 0) {
-            $uri = substr($uri, strlen($scriptName));
+
+        // --- LA MAGIA PARA ENTORNOS CON SUBCARPETAS ---
+        // 1. Obtenemos el directorio real de ejecución (ej. /porfolio_completo/public o /)
+        $basePath = dirname($_SERVER['SCRIPT_NAME']);
+
+        // 2. Reemplazamos barras invertidas por normales (por si estás en Windows)
+        $basePath = str_replace('\\', '/', $basePath);
+
+        // 3. Si el basePath termina en '/public', sabemos que estamos usando el truco del .htaccess
+        // Así que le quitamos el '/public' para obtener la carpeta raíz real del proyecto
+        if (basename($basePath) === 'public') {
+            $basePath = dirname($basePath);
         }
-        
+
+        // 4. Limpiamos las barras finales para hacer la comparación
+        $basePath = rtrim($basePath, '/');
+
+        // 5. Si la URI actual empieza con el nombre de la carpeta base, se lo quitamos
+        if ($basePath !== '' && strpos($uri, $basePath) === 0) {
+            $uri = substr($uri, strlen($basePath));
+        }
+        // ----------------------------------------------
+
         // Aseguramos que la URL siempre empiece con '/' y no tenga '/' al final
         $uri = '/' . trim($uri, '/');
         if ($uri === '//') $uri = '/';
 
+        error_log("Resolviendo ruta limpia: $method $uri");
+        // error_log("Rutas registradas: " . print_r($this->routes, true));
+
         // Buscamos si la ruta existe
-        error_log("Resolviendo ruta: $method $uri");
         foreach ($this->routes[$method] ?? [] as $route => $callback) {
             // Convertimos la ruta registrada (ej. /proyectos/{id}) en una expresión regular
             $routeRegex = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([^/]+)', $route);

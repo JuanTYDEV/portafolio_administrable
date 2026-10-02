@@ -16,12 +16,10 @@ class InicioController
         $datos = [
             'titulo' => 'Bienvenido a mi Portafolio',
             'estilos_adicionales' => [
-                'assets/web/css/portafolio.css' // Se procesará por tu UrlHelper
+                // Aquí puedes agregar rutas a archivos CSS adicionales si es necesario
             ],
             'scripts_adicionales' => [
-                'assets/web/js/data.js', // Se procesará por tu UrlHelper
-                'assets/web/js/main.js', // Se procesará por tu UrlHelper
-                'assets/web/js/i18n.js' // Se procesará por tu UrlHelper
+                // Aquí puedes agregar rutas a archivos JS adicionales si es necesario
             ]
         ];
 

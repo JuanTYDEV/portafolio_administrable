@@ -15,6 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <!-- <link rel="stylesheet" href="assets/css/portafolio.css"> -->
 
+    <link rel="stylesheet" href="<?php echo App\Helpers\UrlHelper::asset_url('assets/web/css/portafolio.css'); ?>">
+
     <!-- Incluimos los estilos desde un archivo separado para mantener la estructura limpia y organizada -->
     <?php include __DIR__ . '/../partials/styles.php'; ?>
 </head>
@@ -49,6 +51,10 @@
     <!-- Sección para el CV imprimible, que se genera dinámicamente y se oculta del usuario -->
     <div id="cv-print" aria-hidden="true"></div>
 
+
+    <script src="<?php echo App\Helpers\UrlHelper::asset_url('assets/web/js/data.js'); ?>"></script>
+    <script src="<?php echo App\Helpers\UrlHelper::asset_url('assets/web/js/i18n.js'); ?>"></script>
+    <script src="<?php echo App\Helpers\UrlHelper::asset_url('assets/web/js/main.js'); ?>"></script>
     <!-- ==================== SCRIPTS ==================== -->
     <?php include __DIR__ . '/../partials/scripts.php'; ?>
 </body>

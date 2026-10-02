@@ -17,6 +17,8 @@ class View
 
         // 2. Encendemos el búfer de salida (impide que se imprima HTML en el navegador todavía)
         ob_start();
+
+        error_log("Renderizando vista: $vista con layout: $layout");
         
         // 3. Requerimos el archivo de la vista específica. Su HTML se guarda en la memoria.
         require __DIR__ . "/../views/{$vista}.php";

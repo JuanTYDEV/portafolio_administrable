@@ -25,8 +25,8 @@ $router = new \Core\Router();
 
 // 6. Cargar el archivo de rutas
 require_once BASE_PATH . '/routes/web.php';
-// require_once BASE_PATH . '/routes/admin.php';
-// require_once BASE_PATH . '/routes/api/v1/api.php';
+require_once BASE_PATH . '/routes/admin.php';
+require_once BASE_PATH . '/routes/api/v1/api.php';
 
 
 $router->resolve();

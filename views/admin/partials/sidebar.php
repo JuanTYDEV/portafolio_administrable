@@ -1,11 +1,14 @@
 <?php
-if (!defined('APP_RUNNING')) die("Acceso denegado.");
+if (!defined('APP_RUNNING')) {
+	http_response_code(404);
+	exit;
+}
 
 // Importamos la clase (El autoloader la buscará automáticamente)
-// use App\Helpers\MenuHelper;
+use App\Helpers\MenuHelper;
 
-// Generar el menú usando el Helper
-$menu_html = ""
+$rutaActual = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
 ?>
 
 <div class="sidebar" data-background-color="dark">
@@ -32,7 +35,7 @@ $menu_html = ""
 		<div class="sidebar-content">
 			<ul class="nav nav-secondary">
 
-				<?php echo $menu_html; ?>
+				<?php echo MenuHelper::generar($_SESSION['menu_sidebar'], $rutaActual); ?>
 
 			</ul>
 		</div>

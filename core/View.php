@@ -8,7 +8,7 @@ class View
      * Renderiza una vista dentro de un layout.
      * 
      * @param string $vista  Ruta de la vista (ej. 'admin/pages/clientes/lista')
-     * @param array  $datos  Variables a pasar a la vista
+     * @param array  $datos  Variables a pasar a la vista se pueden acceder como $titulo, $contenido, etc. para los scripts, se puede pasar un array $scripts_adicionales con las rutas de los scripts a incluir al igual que con los estilos $estilos_adicionales.
      * @param string $layout Ruta del layout (ej. 'admin/layouts/dashboard')
      */
     public static function render($vista = 'web/pages/inicio', $datos = [], $layout = 'web/layout/app')

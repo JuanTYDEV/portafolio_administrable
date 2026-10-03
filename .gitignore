@@ -25,5 +25,4 @@ AGENTS.md
 PENDIENTES.md
 
 # Configuración de la base de datos
-/config/database.php
 .env

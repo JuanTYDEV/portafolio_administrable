@@ -25,5 +25,3 @@ if (!defined('APP_RUNNING')) {
 
     <button type="submit" class="btn-login">Iniciar Sesión</button>
 </form>
-
-<h1>Iniciar Sesión</h1>

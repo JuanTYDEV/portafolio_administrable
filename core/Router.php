@@ -9,15 +9,46 @@ class Router
     protected array $routes = [];
 
     // Registrar rutas GET
-    public function get(string $route, array|callable $callback)
+    public function get(string $route, array|callable $callback, array $middlewares = [])
     {
-        $this->routes['GET'][$route] = $callback;
+        $this->routes['GET'][$route] = [
+            'callback' => $callback,
+            'middlewares' => $middlewares
+        ];
     }
 
     // Registrar rutas POST
-    public function post(string $route, array|callable $callback)
+    public function post(string $route, array|callable $callback, array $middlewares = [])
     {
-        $this->routes['POST'][$route] = $callback;
+        $this->routes['POST'][$route] = [
+            'callback' => $callback,
+            'middlewares' => $middlewares
+        ];
+    }
+
+    // Agrega estos métodos debajo de tus funciones get() y post()
+    public function put(string $route, array|callable $callback, array $middlewares = [])
+    {
+        $this->routes['PUT'][$route] = [
+            'callback' => $callback,
+            'middlewares' => $middlewares
+        ];
+    }
+
+    public function patch(string $route, array|callable $callback, array $middlewares = [])
+    {
+        $this->routes['PATCH'][$route] = [
+            'callback' => $callback,
+            'middlewares' => $middlewares
+        ];
+    }
+
+    public function delete(string $route, array|callable $callback, array $middlewares = [])
+    {
+        $this->routes['DELETE'][$route] = [
+            'callback' => $callback,
+            'middlewares' => $middlewares
+        ];
     }
 
     // El cerebro: lee la URL y busca coincidencias
@@ -58,13 +89,23 @@ class Router
         // error_log("Rutas registradas: " . print_r($this->routes, true));
 
         // Buscamos si la ruta existe
-        foreach ($this->routes[$method] ?? [] as $route => $callback) {
+        foreach ($this->routes[$method] ?? [] as $route => $routeData) {
+
+            // Extraemos los datos registrados
+            $callback = $routeData['callback'];
+            $middlewares = $routeData['middlewares'];
+
             // Convertimos la ruta registrada (ej. /proyectos/{id}) en una expresión regular
             $routeRegex = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([^/]+)', $route);
             $routeRegex = "#^" . $routeRegex . "$#";
 
             if (preg_match($routeRegex, $uri, $matches)) {
                 array_shift($matches); // Quitamos la coincidencia completa, dejamos solo las variables
+
+                foreach ($middlewares as $middleware) {
+                    $instancia = new $middleware();
+                    $instancia->handle();
+                }
 
                 // Si pasaste un array [Controlador::class, 'metodo']
                 if (is_array($callback)) {

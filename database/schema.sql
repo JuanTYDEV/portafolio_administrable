@@ -146,5 +146,10 @@ CREATE TABLE redes_sociales (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
 -- Se inserta el registro único inicial
 INSERT INTO redes_sociales (id) VALUES (1);
+
+CREATE TABLE modulo_padre( id INT AUTO_INCREMENT PRIMARY KEY, nombre VARCHAR(50), icono VARCHAR(50), orden INT DEFAULT NULL, create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ); 
+
+ALTER TABLE modulos ADD COLUMN modulo_padre_id INT , ADD CONSTRAINT fk_modulo_padre FOREIGN KEY (modulo_padre_id) REFERENCES modulo_padre(id); 

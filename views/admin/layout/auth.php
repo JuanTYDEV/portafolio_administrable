@@ -29,4 +29,10 @@ use App\Helpers\UrlHelper;
     </div>
 </body>
 
+<script>
+    // Definimos la ruta base del proyecto de forma global
+    const BASE_URL = '<?php echo UrlHelper::base_url("/"); ?>';
+</script>
+<script src="<?php echo UrlHelper::asset_url('assets/admin/js/auth.js'); ?>"></script>
+
 </html>

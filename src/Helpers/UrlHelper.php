@@ -38,13 +38,53 @@ class UrlHelper
     /**
      * URL absoluta desde la base de la app. base_url('assets/css/x.css').
      */
-    public static function base_url(string $ruta = ''): string
+    public static function base_url(string $path = ''): string
     {
-        $base = self::url_base();
-        $limpia = '/' . ltrim($ruta, '/');
-        while (strpos($limpia, '//') !== false) {
-            $limpia = str_replace('//', '/', $limpia);
+        // 1. Obtenemos el protocolo (http o https)
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+
+        // 2. Obtenemos el dominio (localhost o midominio.com)
+        $host = $_SERVER['HTTP_HOST'];
+
+        // 3. Obtenemos la carpeta base dinámica (ej. /porfolio_completo/public)
+        $baseDir = dirname($_SERVER['SCRIPT_NAME']);
+        $baseDir = str_replace('\\', '/', $baseDir);
+
+        // 4. EL TRUCO: Si termina en /public, se lo quitamos
+        if (basename($baseDir) === 'public') {
+            $baseDir = dirname($baseDir);
         }
-        return $base . $limpia;
+
+        // Limpiamos barras finales
+        $baseDir = rtrim($baseDir, '/');
+        $path = '/' . ltrim($path, '/');
+
+        // Retornamos la URL limpia y perfecta
+        return $protocol . "://" . $host . $baseDir . $path;
+    }
+
+    /**
+     * Obtiene la ruta actual limpia, ignorando subcarpetas de entornos de desarrollo.
+     * Retorna algo como '/panel/usuarios' en lugar de '/porfolio_completo/panel/usuarios'.
+     */
+    public static function current_path(): string
+    {
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        $basePath = dirname($_SERVER['SCRIPT_NAME']);
+        $basePath = str_replace('\\', '/', $basePath);
+
+        if (basename($basePath) === 'public') {
+            $basePath = dirname($basePath);
+        }
+
+        $basePath = rtrim($basePath, '/');
+
+        if ($basePath !== '' && strpos($uri, $basePath) === 0) {
+            $uri = substr($uri, strlen($basePath));
+        }
+
+        $uri = '/' . trim($uri, '/');
+        return $uri === '//' ? '/' : $uri;
     }
 }

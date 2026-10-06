@@ -15,7 +15,7 @@ use App\Helpers\UrlHelper;
     <meta
         content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
         name="viewport" />
-    <link rel="shortcut icon" href="<?php echo UrlHelper::asset_url('assets/images/assets_index/svg/logo_hicon.svg'); ?>" type="image/svg+xml">
+    <!-- <link rel="shortcut icon" href="<?php //echo UrlHelper::asset_url('assets/images/assets_index/svg/logo_hicon.svg'); ?>" type="image/svg+xml"> -->
     <!-- Fonts and icons -->
     <script src="<?php echo UrlHelper::asset_url('assets/admin/js/plugin/webfont/webfont.min.js'); ?>"></script>
     <script>

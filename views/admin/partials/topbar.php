@@ -28,10 +28,10 @@
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
 
                 <?php
-                $text = "Sin usuario";
+                $text = Core\Session::get('admin_nombre', "Sin usuario");
                 $btnClose = "#";
                 $image = "https://ionicframework.com/docs/img/demos/avatar.svg";
-                $mail = "";
+                $mail = Core\Session::get('admin_email', null);
 
                 ?>
 
@@ -61,12 +61,13 @@
                             </li>
                             <li>
                                 <div class="dropdown-divider"></div>
-                                <?php
-                                if (isset($_SESSION['id_session']) && isset($_SESSION['name_session'])) { ?>
-                                    <a class="dropdown-item" href="#" id="btn-logout">Logout</a>
-                                <?php } else { ?>
-                                    <a class="dropdown-item" href="<?php echo App\Helpers\UrlHelper::base_url('/login'); ?>">Login</a>
-                                <?php } ?>
+                                <a
+                                    class="dropdown-item"
+                                    href="<?php echo App\Helpers\UrlHelper::base_url('/panel/logout'); ?>"
+                                    id="btn-logout">
+                                    Logout
+                                </a>
+
                             </li>
                         </div>
                     </ul>

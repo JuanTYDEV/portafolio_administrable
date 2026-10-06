@@ -11,10 +11,12 @@ if (!defined('APP_RUNNING')) {
 }
 
 use App\Helpers\UrlHelper;
+use Error;
+
 class MenuHelper
 {
     /**
-     * Genera el menú HTML dinámicamente basado en la sesión (que viene de la BD)
+     * Genera el menú HTML dinámicamente basado en la sesión
      */
     public static function generar(array $menu_sidebar, string $pagina_actual): string
     {
@@ -27,20 +29,27 @@ class MenuHelper
             }
         }
 
-        // 2. Renderizar los menús desplegables (padres) y sus hijos
+        // 2. Renderizar los Padres como "Secciones" y a sus hijos como items normales
         foreach ($menu_sidebar as $padre_id => $padre) {
             if ($padre_id == 0) continue; // Saltamos el 0 porque ya lo renderizamos arriba
 
-            // Solo dibujamos el padre si tiene módulos hijos asignados
+            // Solo dibujamos la sección si tiene módulos hijos asignados
             if (!empty($padre['modulos'])) {
-                $html .= self::generarMenuItemPadre($padre_id, $padre, $pagina_actual);
+
+                // A) Imprimimos el título de la sección (El Padre)
+                $html .= self::generarSeccionPadre($padre);
+
+                // B) Imprimimos los hijos debajo de la sección, usando el mismo diseño normal
+                foreach ($padre['modulos'] as $hijo) {
+                    $html .= self::generarMenuItem($hijo, $pagina_actual);
+                }
             }
         }
 
         // 3. Agregar botón de Salir al final
         $html .= '
         <li class="nav-item">
-            <a href="' . UrlHelper::base_url('/logout') . '">
+            <a href="' . UrlHelper::base_url('/panel/logout') . '">
                 <i class="fas fa-power-off"></i>
                 <p>Salir</p>
             </a>
@@ -50,7 +59,7 @@ class MenuHelper
     }
 
     /**
-     * Genera un item de menú normal (Sin hijos)
+     * Genera un item de menú normal (Botón clickeable)
      */
     private static function generarMenuItem(array $item, string $pagina_actual): string
     {
@@ -62,81 +71,26 @@ class MenuHelper
         <li class="nav-item ' . $active . '">
             <a href="' . UrlHelper::base_url($item['ruta']) . '">
                 <i class="' . $icono . '"></i>
-                <p>' . htmlspecialchars($item['nombre']) . '</p>
+                <p>' . strtoupper(htmlspecialchars($item['nombre'])) . '</p>
             </a>
         </li>';
     }
 
     /**
-     * Genera un item de menú padre con sus hijos
+     * Genera el separador visual (Sección) para los módulos agrupados
      */
-    private static function generarMenuItemPadre(int $padre_id, array $padre, string $pagina_actual): string
+    private static function generarSeccionPadre(array $padre): string
     {
-        $tiene_hijo_activo = false;
+        // Si el padre no tiene icono en la BD, usamos los puntitos por defecto de la plantilla
+        $icono = $padre['icono'] ?: 'fa fa-ellipsis-h';
+        $nombre = strtoupper(htmlspecialchars($padre['nombre']));
 
-        // Verificar si algún hijo es la página actual para expandir el menú
-        foreach ($padre['modulos'] as $hijo) {
-            if ($pagina_actual == $hijo['ruta']) {
-                $tiene_hijo_activo = true;
-                break;
-            }
-        }
-
-        $icono = $padre['icono'] ?: 'fas fa-folder';
-        $expandido = $tiene_hijo_activo ? '' : 'collapsed';
-        $expanded = $tiene_hijo_activo ? 'true' : 'false';
-        $show_class = $tiene_hijo_activo ? 'show' : '';
-        $padre_active = $tiene_hijo_activo ? 'active' : ''; // Opcional: marcar el padre como activo
-
-        $html = '
-        <li class="nav-item ' . $padre_active . '">
-            <a data-bs-toggle="collapse" href="#menu-' . $padre_id . '" class="' . $expandido . '" aria-expanded="' . $expanded . '">
+        return '
+        <li class="nav-section">
+            <span class="sidebar-mini-icon">
                 <i class="' . $icono . '"></i>
-                <p>' . htmlspecialchars($padre['nombre']) . '</p>
-                <span class="caret"></span>
-            </a>
-            <div class="collapse ' . $show_class . '" id="menu-' . $padre_id . '">
-                <ul class="nav nav-collapse">';
-
-        // Generar los <li> de los hijos
-        foreach ($padre['modulos'] as $hijo) {
-            $active = ($pagina_actual == $hijo['ruta']) ? 'active' : '';
-
-            $html .= '
-                    <li class="' . $active . '">
-                        <a href="' . UrlHelper::base_url($hijo['ruta']) . '">
-                            <span class="sub-item">' . htmlspecialchars($hijo['nombre']) . '</span>
-                        </a>
-                    </li>';
-        }
-
-        $html .= '
-                </ul>
-            </div>
+            </span>
+            <h4 class="text-section">' . $nombre . '</h4>
         </li>';
-
-        return $html;
     }
 }
-
-/* Consulta a usar para obtener el menú dinámico desde la base de datos:
-
-SELECT 
-    mp.id AS padre_id, 
-    mp.nombre AS padre_nombre, 
-    mp.icono AS padre_icono, 
-    m.id AS modulo_id, 
-    m.nombre AS modulo_nombre, 
-    m.ruta, 
-    m.icono, 
-    p.permiso_crear, 
-    p.permiso_editar, 
-    p.permiso_eliminar 
-FROM permisos p
-JOIN modulos m ON p.modulo_id = m.id
-LEFT JOIN modulo_padre mp ON m.modulo_padre_id = mp.id
-WHERE p.rol_id = :rol_id 
-  AND p.permiso_ver = 1
-ORDER BY mp.orden, m.orden;
-
-*/

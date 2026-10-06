@@ -8,6 +8,7 @@ composer.phar
 
 # === IMAGENES DE PERFILES/ COACHES/ DISCIPLINAS ===
 /assets/images/*
+/secret/*
 
 /vendor/*
 /vendor/phpmailer/

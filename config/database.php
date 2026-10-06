@@ -3,9 +3,9 @@
 if (!defined('APP_RUNNING')) die("Acceso denegado.");
 
 return [
-    'host'     => $_ENV['DB_HOST'] ?? 'localhost',
-    'dbname'   => $_ENV['DB_NAME'] ?? 'porfolio_db',
+    'host'     => $_ENV['DB_HOST'] ?? 'database',
+    'dbname'   => $_ENV['DB_NAME'] ?? 'portafolio',
     'username' => $_ENV['DB_USER'] ?? 'root',
-    'password' => $_ENV['DB_PASS'] ?? ''
+    'password' => $_ENV['DB_PASSWORD'] ?? ''
 ];
     
